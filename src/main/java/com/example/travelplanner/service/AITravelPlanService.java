@@ -55,6 +55,9 @@ public class AITravelPlanService {
                 logger.info("Raw Response: {}", responseBody);
                 return parseAIResponse(responseBody);
             });
+        } catch (java.net.SocketTimeoutException e) {
+            logger.error("Request timeout: {}", e.getMessage());
+            throw new RuntimeException("Request timeout while generating travel plan", e);
         } catch (IOException e) {
             logger.error("HTTP request failed: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to generate travel plan", e);
