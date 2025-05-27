@@ -52,7 +52,7 @@ public class AITravelPlanService {
 
             return client.execute(httpRequest, response -> {
                 String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-                logger.info("Raw Response: {}", responseBody);
+                logger.info("AI Response: {}", responseBody);
                 return parseAIResponse(responseBody);
             });
         } catch (java.net.SocketTimeoutException e) {
@@ -66,9 +66,10 @@ public class AITravelPlanService {
 
     private String buildPrompt(TravelPlanRequest request) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("你是一个专业的旅游规划师，请为以下旅行生成详细的行程计划：\n");
+        prompt.append("你是一个专业的旅游规划师，在以下旅行已有目的地列表的基础上，请为以下旅行生成详细的行程计划：\n");
         prompt.append("行程标题：").append(request.getTitle()).append("\n");
-        prompt.append("目的地ID列表：").append(request.getDestinations()).append("\n");
+        // TODO:从id获取地点名称
+        prompt.append("行程已有目的地列表：").append(request.getDestinations()).append("\n");
         prompt.append("开始日期：").append(request.getStartDate()).append("\n");
         prompt.append("结束日期：").append(request.getEndDate()).append("\n");
         prompt.append("持续天数：").append(request.getDuration()).append("天\n");

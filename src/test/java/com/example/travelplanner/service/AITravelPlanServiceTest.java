@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 @SpringBootTest
-public class SimpleServiceTest {
+public class AITravelPlanServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(SimpleServiceTest.class);
 
     @Autowired
@@ -22,7 +22,7 @@ public class SimpleServiceTest {
             // 创建请求对象
             TravelPlanRequest request = new TravelPlanRequest();
             request.setTitle("北京三日游");
-            request.setDestinations(Arrays.asList(1L)); // 假设北京的目的地ID是1
+            request.setDestinations(Arrays.asList(1L));
             request.setStartDate("2025-05-28");
             request.setEndDate("2025-05-30");
             request.setDuration(3);
@@ -37,7 +37,7 @@ public class SimpleServiceTest {
             preferences.setSpecialRequirements("不喜欢博物馆，喜欢吃，喜欢citywalk，想去环球影城");
             request.setPreferences(preferences);
 
-            // 调用Service生成行程
+            // 生成行程
             TravelPlanResponse response = service.generateTravelPlan(request);
             
             // 打印结果
