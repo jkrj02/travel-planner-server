@@ -16,8 +16,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
-public class AMapService {
-    private static final Logger logger = LoggerFactory.getLogger(AMapService.class);
+public class POIService {
+    private static final Logger logger = LoggerFactory.getLogger(POIService.class);
 
     @Value("${amap.api.url}")
     private String apiUrl;
@@ -35,25 +35,53 @@ public class AMapService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public POIResponse searchPOIs(String city, String keywords) {
+        if (city == null || city.trim().isEmpty())
+        {
+            POIResponse response = new POIResponse();
+            response.setStatus("0");
+            response.setInfo("INVALID_PARAMS");
+            response.setInfocode("20000");
+            return response;
+        }
+
+        // 关键词默认值"景点"
+        if (keywords == null || keywords.trim().isEmpty())
+        {
+            keywords = "景点";
+        }
+
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             // URL编码拼接
             String encodedCity = URLEncoder.encode(city, StandardCharsets.UTF_8);
             String encodedKeywords = URLEncoder.encode(keywords, StandardCharsets.UTF_8);
             
-            String url = String.format("%s?key=%s&keywords=%s&region=%s&output=json&page_size=25&page_num=1%showfields=business",
+            String url = String.format("%s?key=%s&keywords=%s&region=%s&output=json&page_size=25&page_num=1&showfields=business",
                     apiUrl, apiKey, encodedKeywords, encodedCity);
+
+            // 查看url
+            logger.info(url);
 
             HttpGet httpRequest = new HttpGet(url);
 
             return client.execute(httpRequest, response -> {
                 String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
                 logger.info("AMap POI 2.0 API Response: {}", responseBody);
-                return objectMapper.readValue(responseBody, POIResponse.class);
+                POIResponse poiResponse = objectMapper.readValue(responseBody, POIResponse.class);
+                
+                if (!"1".equals(poiResponse.getStatus()))
+                {
+                    logger.error("API returned error: {}", poiResponse.getInfo());
+                    throw new RuntimeException("Failed to search: " + poiResponse.getInfo());
+                }
+                
+                return poiResponse;
             });
         } catch (java.net.SocketTimeoutException e) {
+            // 请求超时
             logger.error("Request timeout: {}", e.getMessage());
             throw new RuntimeException("Request timeout while searching", e);
         } catch (IOException e) {
+            // 请求失败
             logger.error("Failed to search POIs: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to search", e);
         }

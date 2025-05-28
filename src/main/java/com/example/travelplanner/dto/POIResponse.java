@@ -13,19 +13,20 @@ public class POIResponse {
 
     @Data
     public static class POI {
-        private String name;
-        private String id;
-        private String location;
-        private String type;
-        private String typecode;
-        private String pname;
-        private String cityname;
-        private String adname;
+        private String parent;
         private String address;
+        private String distance;
         private String pcode;
         private String adcode;
+        private String pname;
+        private String cityname;
+        private String type;
+        private String typecode;
+        private String adname;
         private String citycode;
-        // business
+        private String name;
+        private String location;
+        private String id;
         private String business_area;
         private String opentime_today;
         private String opentime_week;
@@ -34,6 +35,6 @@ public class POIResponse {
         private String rating;
         private String cost;
         private String parking_type;
-        private String alias;        
+        private String alias;
     }
 } 

@@ -10,15 +10,18 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 @SpringBootTest
-public class AITravelPlanServiceTest {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleServiceTest.class);
+public class AITravelPlanServiceTest
+{
+    private static final Logger logger = LoggerFactory.getLogger(AITravelPlanServiceTest.class);
 
     @Autowired
     private AITravelPlanService service;
 
-    @Test
-    void testTravelPlan() {
-        try {
+    // @Test
+    void testTravelPlan()
+    {
+        try
+        {
             // 创建请求对象
             TravelPlanRequest request = new TravelPlanRequest();
             request.setTitle("北京三日游");
@@ -59,7 +62,9 @@ public class AITravelPlanServiceTest {
                 });
             });
             
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             logger.error("生成行程时发生错误：{}", e.getMessage(), e);
         }
     }

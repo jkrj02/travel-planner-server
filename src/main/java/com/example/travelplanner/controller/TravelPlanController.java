@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/itineraries")
 @CrossOrigin(origins = "*")
-public class TravelPlanController {
+public class TravelPlanController
+{
 
     @Autowired
     private AITravelPlanService aiTravelPlanService;
 
     @PostMapping("/generate")
-    public ResponseEntity<TravelPlanResponse> generateTravelPlan(@RequestBody TravelPlanRequest request) {
+    public ResponseEntity<TravelPlanResponse> generateTravelPlan(@RequestBody TravelPlanRequest request)
+    {
         TravelPlanResponse response = aiTravelPlanService.generateTravelPlan(request);
         return ResponseEntity.ok(response);
     }

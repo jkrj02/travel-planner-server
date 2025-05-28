@@ -34,13 +34,16 @@ public class AITravelPlanService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @PostConstruct
-    public void init() {
+    public void init()
+    {
         logger.info("API URL: {}", apiUrl);
         logger.info("API Key: {}", apiKey);
     }
 
-    public TravelPlanResponse generateTravelPlan(TravelPlanRequest request) {
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+    public TravelPlanResponse generateTravelPlan(TravelPlanRequest request)
+    {
+        try (CloseableHttpClient client = HttpClients.createDefault())
+        {
             HttpPost httpRequest = new HttpPost(apiUrl);
             
             httpRequest.setHeader("Content-Type", "application/json");
@@ -55,16 +58,23 @@ public class AITravelPlanService {
                 logger.info("AI Response: {}", responseBody);
                 return parseAIResponse(responseBody);
             });
-        } catch (java.net.SocketTimeoutException e) {
+        }
+        catch (java.net.SocketTimeoutException e)
+        {
+            // 请求超时
             logger.error("Request timeout: {}", e.getMessage());
             throw new RuntimeException("Request timeout while generating travel plan", e);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
+            // 请求失败
             logger.error("HTTP request failed: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to generate travel plan", e);
         }
     }
 
-    private String buildPrompt(TravelPlanRequest request) {
+    private String buildPrompt(TravelPlanRequest request)
+    {
         StringBuilder prompt = new StringBuilder();
         prompt.append("你是一个专业的旅游规划师，在以下旅行已有目的地列表的基础上，请为以下旅行生成详细的行程计划：\n");
         prompt.append("行程标题：").append(request.getTitle()).append("\n");
@@ -75,13 +85,15 @@ public class AITravelPlanService {
         prompt.append("持续天数：").append(request.getDuration()).append("天\n");
         prompt.append("总预算：").append(request.getTotalBudget()).append("\n");
         
-        if (request.getPreferences() != null) {
+        if(request.getPreferences() != null)
+        {
             TravelPlanRequest.Preferences prefs = request.getPreferences();
             prompt.append("行程节奏：").append(prefs.getPacePreference()).append("\n");
             prompt.append("住宿类型：").append(prefs.getAccommodationType()).append("\n");
             prompt.append("交通方式：").append(prefs.getTransportationType()).append("\n");
             prompt.append("活动偏好：").append(prefs.getActivityPreferences()).append("\n");
-            if (prefs.getSpecialRequirements() != null && !prefs.getSpecialRequirements().isEmpty()) {
+            if(prefs.getSpecialRequirements() != null && !prefs.getSpecialRequirements().isEmpty())
+            {
                 prompt.append("特殊需求：").append(prefs.getSpecialRequirements()).append("\n");
             }
         }
